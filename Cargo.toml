@@ -1,0 +1,11 @@
+[package]
+name = "rmusic-player"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+color-eyre = "0.6.5"
+crossterm = "0.29.0"
+derive_more = { version = "2.0.1", features = ["display"] }
+ratatui = "0.29.0"
+rodio = { version = "0.20.1", features = ["symphonia-all"] }
