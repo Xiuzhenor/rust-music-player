@@ -1,5 +1,5 @@
 use color_eyre::Result;
-use crossterm::event::{self, KeyCode, poll};
+use crossterm::event::{self, Event, KeyCode, KeyEventKind, poll};
 use derive_more::Display;
 use ratatui::{
     DefaultTerminal,
@@ -108,8 +108,8 @@ impl MusicPlayer {
 
     fn handle_events(&mut self, sink: &Sink) -> Result<()> {
         if poll(std::time::Duration::from_millis(500))? {
-            if let event::Event::Key(key_event) = event::read()? {
-                if let event::KeyEventKind::Press = key_event.kind {
+            if let Event::Key(key_event) = event::read()? {
+                if let KeyEventKind::Press = key_event.kind {
                     match key_event.code {
                         KeyCode::Char(char) => {
                             if char == 'q' {
