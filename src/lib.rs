@@ -109,36 +109,38 @@ impl MusicPlayer {
     fn handle_events(&mut self, sink: &Sink) -> Result<()> {
         if poll(std::time::Duration::from_millis(500))? {
             if let event::Event::Key(key_event) = event::read()? {
-                match key_event.code {
-                    KeyCode::Char(char) => {
-                        if char == 'q' {
-                            self.running = false;
+                if let event::KeyEventKind::Press = key_event.kind {
+                    match key_event.code {
+                        KeyCode::Char(char) => {
+                            if char == 'q' {
+                                self.running = false;
+                            }
+                            if char == 'n' {
+                                self.change_mode(PlayMode::Nomal);
+                            }
+                            if char == 'l' {
+                                self.change_mode(PlayMode::Loop);
+                            }
+                            if char == 'p' {
+                                self.change_mode(PlayMode::PlayList);
+                            }
+                            if char == 'c' {
+                                self.change_mode(PlayMode::CurrentDir);
+                            }
+                            if char == '=' {
+                                self.increase_volume(sink);
+                            }
+                            if char == '-' {
+                                self.decrease_volume(sink);
+                            }
                         }
-                        if char == 'n' {
-                            self.change_mode(PlayMode::Nomal);
-                        }
-                        if char == 'l' {
-                            self.change_mode(PlayMode::Loop);
-                        }
-                        if char == 'p' {
-                            self.change_mode(PlayMode::PlayList);
-                        }
-                        if char == 'c' {
-                            self.change_mode(PlayMode::CurrentDir);
-                        }
-                        if char == '=' {
-                            self.increase_volume(sink);
-                        }
-                        if char == '-' {
-                            self.decrease_volume(sink);
-                        }
+                        //移动或选中列表项
+                        KeyCode::Up => self.select_previous(),
+                        KeyCode::Down => self.select_next(),
+                        KeyCode::Enter => self.file_select(sink),
+                        _ => (),
                     }
-                    //移动或选中列表项
-                    KeyCode::Up => self.select_previous(),
-                    KeyCode::Down => self.select_next(),
-                    KeyCode::Enter => self.file_select(sink),
-                    _ => (),
-                }
+                };
             };
         }
         match self.play_state.play_mode {
